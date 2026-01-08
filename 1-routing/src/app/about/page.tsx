@@ -1,5 +1,7 @@
-export const metadata = {
-  title: "About juniorenv",
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "About me",
 };
 
 export default function About() {
