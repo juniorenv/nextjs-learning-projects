@@ -1,10 +1,20 @@
-import { notFound, redirect } from "next/navigation";
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
 
-export default async function ProductDetails({
-  params,
-}: {
+type Props = {
   params: Promise<{ productId: string }>;
-}) {
+};
+
+export const generateMetadata = async ({
+  params,
+}: Props): Promise<Metadata> => {
+  const { productId } = await params;
+  return {
+    title: `Product ${productId}`,
+  };
+};
+
+export default async function ProductDetails({ params }: Props) {
   const { productId } = await params;
 
   if (productId === "reviews") notFound();
