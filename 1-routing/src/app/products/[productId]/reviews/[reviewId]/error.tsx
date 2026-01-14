@@ -1,5 +1,26 @@
 "use client";
 
-export default function ErrorBoundary({ error }: { error: Error }) {
-  return <p>{error.message}</p>;
+import { useRouter } from "next/navigation";
+import { startTransition } from "react";
+
+export default function ErrorBoundary({
+  error,
+  reset,
+}: {
+  error: Error;
+  reset: () => void;
+}) {
+  const router = useRouter();
+  const reload = () => {
+    startTransition(() => {
+      router.refresh();
+      reset();
+    });
+  };
+  return (
+    <div>
+      <p>{error.message}</p>
+      <button onClick={() => reload()}>try again</button>
+    </div>
+  );
 }
