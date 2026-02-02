@@ -5,7 +5,7 @@ export const serverSideFunction = () => {
     `multiple libraries,
        environment variables,
        interact with a database,
-       process confidential information`
+       process confidential information`,
   );
   return "server result";
 };
