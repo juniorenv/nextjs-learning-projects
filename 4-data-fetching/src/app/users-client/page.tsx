@@ -44,7 +44,7 @@ export default function UsersClientPage() {
   return (
     <ul className="space-y-4 p-4">
       {users.map((user) => (
-        <li key={user.id} className="bg-zinc-300 p-4">
+        <li key={user.id} className="bg-zinc-300 p-4 rounded-sm">
           <div className="font-bold">{user.name}</div>
           <div className="text-sm">
             <div>Username: {user.username}</div>

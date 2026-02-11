@@ -1,0 +1,29 @@
+interface User {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
+  phone: string;
+}
+
+export default async function UsersServerPage() {
+  await new Promise((resolve) => setTimeout(resolve, 2000));
+
+  const response = await fetch("https://jsonplaceholder.typicode.com/users");
+  const users: User[] = await response.json();
+
+  return (
+    <ul className="space-y-4 p-4">
+      {users.map((user) => (
+        <li key={user.id} className="bg-zinc-300 p-4 rounded-sm">
+          <div className="font-bold">{user.name}</div>
+          <div className="text-sm">
+            <div>Username: {user.username}</div>
+            <div>Email: {user.email}</div>
+            <div>Phone: {user.phone}</div>
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+}
