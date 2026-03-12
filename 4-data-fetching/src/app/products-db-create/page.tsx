@@ -9,10 +9,7 @@ export default function AddProductPage() {
     errors: {},
   };
 
-  const [state, formAction, isPending] = useActionState(
-    createProduct,
-    initialState,
-  );
+  const [state, formAction] = useActionState(createProduct, initialState);
 
   return (
     <form action={formAction} className="p-4 space-y-4 max-w-96">
@@ -54,13 +51,7 @@ export default function AddProductPage() {
           )}
         </label>
       </div>
-      <button
-        type="submit"
-        className="flex items-center justify-center gap-2 w-full p-2 text-black bg-blue-500 rounded disabled:bg-gray-500"
-        disabled={isPending}
-      >
-        Submit
-      </button>
+      <Submit />
     </form>
   );
 }
