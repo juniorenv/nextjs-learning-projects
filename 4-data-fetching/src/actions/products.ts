@@ -1,6 +1,6 @@
 "use server";
 
-import { addProduct } from "@/prisma-pg";
+import { addProduct, updateProduct } from "@/prisma-pg";
 import { redirect } from "next/navigation";
 
 export interface Errors {
@@ -37,6 +37,38 @@ export async function createProduct(prevData: FormState, formData: FormData) {
   }
 
   await addProduct(title, parseInt(price), description);
+
+  redirect("/products-db");
+}
+
+export async function editProduct(
+  id: number,
+  prevData: FormState,
+  formData: FormData,
+) {
+  const title = formData.get("title") as string;
+  const price = formData.get("price") as string;
+  const description = formData.get("description") as string;
+
+  const errors: Errors = {};
+
+  if (!title) {
+    errors.title = "Title is required";
+  }
+
+  if (!price) {
+    errors.price = "Price is required";
+  }
+
+  if (!description) {
+    errors.description = "Description is required";
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return { errors };
+  }
+
+  await updateProduct(id, title, parseInt(price), description);
 
   redirect("/products-db");
 }
