@@ -1,81 +1,66 @@
-import { addProduct } from "@/prisma-pg";
-import { redirect } from "next/navigation";
+"use client";
+
+import { createProduct, FormState } from "@/actions/products";
 import { Submit } from "../components/submit";
 import { useActionState } from "react";
-
-interface Errors {
-  title?: string;
-  price?: string;
-  description?: string;
-}
-
-interface FormState {
-  errors: Errors;
-}
 
 export default function AddProductPage() {
   const initialState: FormState = {
     errors: {},
   };
 
-  useActionState(createProduct, initialState);
-
-  async function createProduct(formData: FormData) {
-    "use server";
-
-    const title = formData.get("title") as string;
-    const price = formData.get("price") as string;
-    const description = formData.get("description") as string;
-
-    const errors: Errors = {};
-
-    if (errors.title) {
-      errors.title = "Title is required";
-    }
-
-    if (errors.price) {
-      errors.price = "Price is required";
-    }
-
-    if (errors.description) {
-      errors.description = "Description is required";
-    }
-
-    if (Object.keys(errors).length > 0) {
-      return { errors };
-    }
-
-    await addProduct(title, parseInt(price), description);
-
-    redirect("/products-db");
-  }
+  const [state, formAction, isPending] = useActionState(
+    createProduct,
+    initialState,
+  );
 
   return (
-    <form action={createProduct} className="p-4 space-y-4 max-w-96">
-      <label className="text-zinc-400">
-        Title
-        <input
-          type="text"
-          className="block w-full p-2 text-black border rounded"
-          name="title"
-        />
-      </label>
-      <label className="text-zinc-400">
-        Price
-        <input
-          type="number"
-          className="block w-full p-2 text-black border rounded"
-          name="price"
-        />
-      </label>
-      <label className="text-zinc-400">
-        Description
-        <textarea
-          className="block w-full p-2 text-black border rounded"
-          name="description"
-        />
-      </label>
-      <Submit />
+    <form action={formAction} className="p-4 space-y-4 max-w-96">
+      <div>
+        <label className="text-zinc-400">
+          Title
+          <input
+            type="text"
+            className="block w-full p-2 text-black border rounded"
+            name="title"
+          />
+        </label>
+        {state.errors.title && (
+          <p className="text-red-500">{state.errors.title}</p>
+        )}
+      </div>
+      <div>
+        <label className="text-zinc-400">
+          Price
+          <input
+            type="number"
+            className="block w-full p-2 text-black border rounded"
+            name="price"
+          />
+        </label>
+        {state.errors.price && (
+          <p className="text-red-500">{state.errors.price}</p>
+        )}
+      </div>
+      <div>
+        <label className="text-zinc-400">
+          Description
+          <textarea
+            className="block w-full p-2 text-black border rounded"
+            name="description"
+          />
+          {state.errors.description && (
+            <p className="text-red-500">{state.errors.description}</p>
+          )}
+        </label>
+      </div>
+      <button
+        type="submit"
+        className="flex items-center justify-center gap-2 w-full p-2 text-black bg-blue-500 rounded disabled:bg-gray-500"
+        disabled={isPending}
+      >
+        Submit
+      </button>
     </form>
   );
 }
