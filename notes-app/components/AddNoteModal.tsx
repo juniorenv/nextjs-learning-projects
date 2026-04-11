@@ -47,6 +47,10 @@ const AddNoteModal = ({
           isComplete: false,
         },
   );
+  const [errors, setErrors] = useState<{
+    title?: string;
+    description?: string;
+  }>({});
 
   const dialogTitle = editingNote ? "Edit Note" : "Add Note";
   const dialogButtonTitle = editingNote ? "Update Note" : "Add Note";
@@ -58,9 +62,24 @@ const AddNoteModal = ({
 
   const onChange = (key: string, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
+    if (key === "title" || key === "description") {
+      setErrors((prev) => ({ ...prev, [key]: undefined }));
+    }
   };
 
   const onAddNoteClick = (note: INote) => {
+    const newErrors: { title?: string; description?: string } = {};
+
+    if (!note.title.trim()) newErrors.title = "Title is required.";
+    if (!note.description.trim())
+      newErrors.description = "Description is required.";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setErrors({});
     handleAddNote(note);
   };
 
@@ -104,11 +123,17 @@ const AddNoteModal = ({
               Title <span className="text-destructive">*</span>
             </label>
             <Input
-              className="bg-alabaster"
+              className={clsx(
+                "bg-alabaster",
+                errors.title && "border-destructive",
+              )}
               placeholder="Note title..."
               value={formData.title}
               onChange={(e) => onChange("title", e.target.value)}
             />
+            {errors.title && (
+              <p className="text-xs text-destructive">{errors.title}</p>
+            )}
           </div>
 
           <div className="flex flex-col gap-1">
@@ -116,11 +141,17 @@ const AddNoteModal = ({
               Description <span className="text-destructive">*</span>
             </label>
             <Textarea
-              className="min-h-24 resize-none bg-alabaster"
+              className={clsx(
+                "min-h-24 resize-none bg-alabaster",
+                errors.description && `border-destructive`,
+              )}
               placeholder="Note description..."
               value={formData.description}
               onChange={(e) => onChange("description", e.target.value)}
             />
+            {errors.description && (
+              <p className="text-xs text-destructive">{errors.description}</p>
+            )}
           </div>
 
           <div className="flex flex-col gap-1">
