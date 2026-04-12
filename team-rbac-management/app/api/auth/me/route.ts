@@ -14,7 +14,7 @@ export async function GET() {
     }
     return NextResponse.json(user);
   } catch (error) {
-    console.error(error);
+    console.error("Get user(me) error:", error);
     return NextResponse.json(
       {
         error: "Internal server error, Something went wrong!",
