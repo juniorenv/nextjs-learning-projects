@@ -51,7 +51,7 @@ export const getCurrentUser = async (): Promise<User | null> => {
 
     return user as User;
   } catch (error) {
-    console.error(error);
+    console.error("Error verifying token or fetching user:", error);
     return null;
   }
 };

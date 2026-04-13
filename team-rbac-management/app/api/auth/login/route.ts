@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
 
     return response;
   } catch (error) {
-    console.error("Login failed", error);
+    console.error("Login failed:", error);
     return NextResponse.json(
       {
         error: "Internal server error, Something went wrong!",

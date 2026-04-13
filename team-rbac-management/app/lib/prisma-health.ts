@@ -11,7 +11,7 @@ export async function checkPrismaConnection() {
       timestamp,
     };
   } catch (error) {
-    console.error(error);
+    console.error("Error executing Prisma health check:", error);
     return {
       ok: false,
       timestamp,
