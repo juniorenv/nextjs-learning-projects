@@ -31,13 +31,18 @@ body {
   background-image:
     radial-gradient(
       1200px circle at 20% -10%,
-      rgb(168 117 255 / 0.2),
+      rgba(122, 56, 255, 0.2),
       transparent 40%
     ),
     radial-gradient(
       1000px circle at 120% 10%,
-      rgb(149 95 255 / 0.15),
+      rgba(81, 0, 255, 0.15),
       transparent 38%
+    ),
+    radial-gradient(
+      800px circle at 105% 110%,
+      rgba(77, 0, 220, 0.12),
+      transparent 40%
     );
 }
 
