@@ -45,3 +45,32 @@ export async function createEventAction(formData: FormData) {
 
   redirect(`/events/${created.id}`);
 }
+
+export async function createInviteLinkAction(eventId: string) {
+  const session = await getSession();
+  const userId = session.data?.user.id;
+
+  if (!userId) {
+    redirect("/auth/login");
+  }
+
+  const owns = await prisma.event.findFirst({
+    where: { id: eventId, ownerUserId: userId },
+    select: { id: true },
+  });
+
+  if (!owns) {
+    throw new Error("Event not found.");
+  }
+
+  const token = crypto.randomUUID().replace(/-/g, "");
+
+  await prisma.eventInvite.upsert({
+    where: { eventId },
+    create: {
+      token,
+      eventId,
+    },
+    update: { token },
+  });
+}
