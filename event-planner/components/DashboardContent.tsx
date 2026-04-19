@@ -94,7 +94,7 @@ export async function DashboardContent({ userId }: { userId: string }) {
                     Not Going: {event.notGoingCount}
                   </Badge>
                 </div>
-                <p>
+                <p className="max-w-2xl text-sm text-(--muted-foreground)">
                   {event.eventDate
                     ? new Date(event.eventDate).toLocaleString()
                     : "No date selected"}

@@ -4,9 +4,17 @@ import { notFound } from "next/navigation";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { Badge } from "./ui/badge";
-import { Card, CardContent, CardHeader } from "./ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Form } from "./ui/form";
 import { createInviteLinkAction } from "@/lib/actions/events";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "./ui/table";
 
 export async function EventDetailContent({
   userId,
@@ -49,6 +57,28 @@ export async function EventDetailContent({
     notGoingCount: counts.notGoingCount,
   };
 
+  const rsvpRows = await prisma.eventRsvp.findMany({
+    where: {
+      eventId,
+    },
+    orderBy: { respondedAt: "desc" },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      status: true,
+      respondedAt: true,
+    },
+  });
+
+  const rsvps = rsvpRows.map((r) => ({
+    id: r.id,
+    name: r.name,
+    email: r.email,
+    status: r.status,
+    respondedAt: r.respondedAt.toISOString(),
+  }));
+
   const createInviteActionForEvent = createInviteLinkAction.bind(null, row.id);
 
   const inviteUrl = event.inviteToken
@@ -69,9 +99,11 @@ export async function EventDetailContent({
 
             {event.location ? `- ${event.location}` : ""}
           </p>
-          {event.description ? (
-            <p className="bg-muted-foreground text-sm">{event.description}</p>
-          ) : null}
+          {event.description && (
+            <p className="max-w-2xl text-sm text-(--muted-foreground)">
+              {event.description}
+            </p>
+          )}
         </div>
         <Button asChild variant="outline">
           <Link href={"/dashboard"}>Back</Link>
@@ -109,6 +141,46 @@ export async function EventDetailContent({
           <Form action={createInviteActionForEvent}>
             <Button type="submit">Generate Link</Button>
           </Form>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Attendees</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {rsvps.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No responses yet.</p>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Updated</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {rsvps.map((rsvp) => (
+                  <TableRow key={rsvp.id}>
+                    <TableCell>{rsvp.name}</TableCell>
+                    <TableCell>{rsvp.email}</TableCell>
+                    <TableCell>
+                      <Badge variant="secondary">
+                        {rsvp.status === "not_going"
+                          ? "Not going"
+                          : rsvp.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      {new Date(rsvp.respondedAt).toLocaleString()}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </CardContent>
       </Card>
     </div>
