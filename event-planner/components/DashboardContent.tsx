@@ -98,7 +98,7 @@ export async function DashboardContent({ userId }: { userId: string }) {
                   {event.eventDate
                     ? new Date(event.eventDate).toLocaleString()
                     : "No date selected"}
-                  {event.location ? `- ${event.location}` : ""}
+                  {event.location ? ` - ${event.location}` : ""}
                 </p>
               </CardHeader>
             </Card>

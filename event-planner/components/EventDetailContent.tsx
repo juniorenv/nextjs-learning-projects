@@ -97,7 +97,7 @@ export async function EventDetailContent({
               ? new Date(event.eventDate).toLocaleString()
               : "No date selected"}
 
-            {event.location ? `- ${event.location}` : ""}
+            {event.location ? ` - ${event.location}` : ""}
           </p>
           {event.description && (
             <p className="max-w-2xl text-sm text-(--muted-foreground)">
